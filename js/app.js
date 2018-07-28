@@ -9,7 +9,9 @@ var movNum = 0;
 var stars = document.getElementsByClassName('fa-star');
 
 var restart = document.getElementsByClassName('restart')[0];
-restart.addEventListener('click', repeat());
+
+var matchedCards = document.getElementsByClassName('match').length;
+restart.addEventListener('clicked', newGame());
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -96,6 +98,9 @@ function match(card){
   openList.className = 'card match';
   card.className = 'card match';
   openList = null;
+  matchedCards = document.getElementsByClassName('match').length;
+  if(matchedCards == 16)
+    gameOver();
 }
 
 function incMoves(){
@@ -105,6 +110,10 @@ function incMoves(){
     stars[0].className = 'fa fa-star-o';
 }
 
-function repeat(){
+function newGame(){
+
+}
+
+function gameOver(){
   
 }
