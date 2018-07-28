@@ -82,10 +82,16 @@ function open(card)
     if(openList.children[0].className == card.children[0].className)
       match(card);
     else {
-      hide(card);
+      wrong(card);
     }
     incMoves();
   }
+}
+
+function wrong(card){
+  card.className += ' wrong';
+  openList.className += ' wrong'
+  setTimeout(() => hide(card), 300);
 }
 
 function hide(card){
@@ -115,5 +121,5 @@ function newGame(){
 }
 
 function gameOver(){
-  
+
 }
