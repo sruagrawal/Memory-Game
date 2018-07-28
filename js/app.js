@@ -11,6 +11,9 @@ var stars = document.getElementsByClassName('fa-star');
 var restart = document.getElementsByClassName('restart')[0];
 
 var matchedCards = document.getElementsByClassName('match').length;
+
+var gameOverMod = document.getElementById('endGame');
+
 restart.addEventListener('clicked', newGame());
 /*
  * Display the cards on the page
@@ -121,5 +124,9 @@ function newGame(){
 }
 
 function gameOver(){
-
+  gameOverMod.style = "display: inline";
+  var finalMov = document.getElementById('finalMoves');
+  finalMov.innerHTML = movNum+1;
+  var finStars = document.getElementById('finalStars');
+  finStars.innerHTML = stars.length;
 }
