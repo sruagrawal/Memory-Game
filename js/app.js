@@ -3,18 +3,21 @@
  */
 var cards = ['fa fa-diamond', 'fa fa-paper-plane-o', 'fa fa-anchor', 'fa fa-bolt', 'fa fa-cube', 'fa fa-leaf', 'fa fa-bicycle', 'fa fa-bomb', 'fa fa-diamond', 'fa fa-paper-plane-o', 'fa fa-anchor', 'fa fa-bolt', 'fa fa-cube', 'fa fa-leaf', 'fa fa-bicycle', 'fa fa-bomb'];
 
+var movNum = 0, deck, openList = null;
+
 var moves = document.getElementsByClassName('moves')[0];
-var movNum = 0;
 
 var stars = document.getElementsByClassName('fa-star');
 
-var restart = document.getElementsByClassName('restart')[0];
+var repeatButton = document.getElementsByClassName('fa-repeat')[0];
 
 var matchedCards = document.getElementsByClassName('match').length;
 
 var gameOverMod = document.getElementById('endGame');
 
-restart.addEventListener('clicked', newGame());
+repeatButton.addEventListener('click', () => newGame());
+newDeck();
+cardTarget();
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -22,17 +25,22 @@ restart.addEventListener('clicked', newGame());
  *   - add each card's HTML to the page
  */
 
-cards = shuffle(cards);
-var deck = document.getElementsByClassName('deck')[0];
-for(var x = 0; x < cards.length; x++){
-  var card = document.createElement('li');
-  card.className = 'card';
-  var value = document.createElement('i');
-  value.className = cards[x];
-  card.appendChild(value);
-  deck.appendChild(card);
+function newDeck(){
+  cards = shuffle(cards);
+  deck = document.getElementsByClassName('deck')[0];
+  while(deck.children[0]){
+    deck.removeChild(deck.children[0]);
+  }
+  for(var x = 0; x < cards.length; x++)
+  {
+    var card = document.createElement('li');
+    card.className = 'card';
+    var value = document.createElement('i');
+    value.className = cards[x];
+    card.appendChild(value);
+    deck.appendChild(card);
+  }
 }
-
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -49,17 +57,18 @@ function shuffle(array) {
     return array;
 }
 
-deck = deck.children;
+function cardTarget(){
+  deck = deck.children;
 
-for(var x = 0; x < deck.length; x++){
-  deck[x].addEventListener('click', function(e){
-    if(e.target.className != 'card match' && e.target != openList){
-      show(e.target);
-      open(e.target);
-    }
-  });
+  for(var x = 0; x < deck.length; x++){
+    deck[x].addEventListener('click', function(e){
+      if(e.target.className != 'card match' && e.target != openList){
+        show(e.target);
+        open(e.target);
+      }
+    });
+  }
 }
-
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -76,7 +85,6 @@ function show(card)
   card.className += ' open show';
 }
 
-var openList = null;
 function open(card)
 {
   if(openList == null)
@@ -115,12 +123,25 @@ function match(card){
 function incMoves(){
   movNum++;
   moves.innerHTML = movNum;
-  if(movNum % 10 ==0)
+  if(movNum % 10 ==0 && stars[0])
     stars[0].className = 'fa fa-star-o';
 }
 
 function newGame(){
+  newDeck();
+  cardTarget();
+  movNum = 0;
+  moves.innerHTML = movNum;
+  openList = null;
+  resetStars();
+}
 
+function resetStars(){
+  usedStars = document.getElementsByClassName('fa fa-star-o');
+  while(usedStars[0])
+  {
+    usedStars[0].className = 'fa fa-star';
+  }
 }
 
 function gameOver(){
