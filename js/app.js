@@ -3,11 +3,13 @@
  */
 var cards = ['fa fa-diamond', 'fa fa-paper-plane-o', 'fa fa-anchor', 'fa fa-bolt', 'fa fa-cube', 'fa fa-leaf', 'fa fa-bicycle', 'fa fa-bomb', 'fa fa-diamond', 'fa fa-paper-plane-o', 'fa fa-anchor', 'fa fa-bolt', 'fa fa-cube', 'fa fa-leaf', 'fa fa-bicycle', 'fa fa-bomb'];
 
-var movNum = 0, deck, openList = null;
+var movNum, deck, openList, counting, time;
 
 var moves = document.getElementsByClassName('moves')[0];
 
 var stars = document.getElementsByClassName('fa-star');
+
+var seconds = document.getElementsByClassName('time')[0];
 
 var repeatButton = document.getElementsByClassName('fa-repeat')[0];
 
@@ -15,9 +17,11 @@ var matchedCards = document.getElementsByClassName('match').length;
 
 var gameOverMod = document.getElementById('endGame');
 
+var repeatGameEnd = document.getElementById('repeatGame');
+
+repeatGameEnd.addEventListener('click', () => newGame());
 repeatButton.addEventListener('click', () => newGame());
-newDeck();
-cardTarget();
+newGame();
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -62,6 +66,11 @@ function cardTarget(){
 
   for(var x = 0; x < deck.length; x++){
     deck[x].addEventListener('click', function(e){
+      if(counting == false)
+      {
+        counting = true;
+        countSeconds();
+      }
       if(e.target.className != 'card match' && e.target != openList){
         show(e.target);
         open(e.target);
@@ -117,23 +126,29 @@ function match(card){
   openList = null;
   matchedCards = document.getElementsByClassName('match').length;
   if(matchedCards == 16)
-    gameOver();
+    setTimeout(() => gameOver(), 500);
 }
 
 function incMoves(){
   movNum++;
   moves.innerHTML = movNum;
-  if(movNum % 10 ==0 && stars[0])
+  if(movNum % 10 ==0 && stars[1]){
     stars[0].className = 'fa fa-star-o';
+    stars = document.getElementsByClassName('fa fa-star');
+  }
 }
 
 function newGame(){
+  counting = false;
+  time = 0;
+  seconds.innerHTML = time;
+  movNum = 0;
+  openList = null;
+  moves.innerHTML = movNum;
   newDeck();
   cardTarget();
-  movNum = 0;
-  moves.innerHTML = movNum;
-  openList = null;
   resetStars();
+  gameOverMod.style = "display: none";
 }
 
 function resetStars(){
@@ -145,9 +160,20 @@ function resetStars(){
 }
 
 function gameOver(){
+  counting = false;
   gameOverMod.style = "display: inline";
   var finalMov = document.getElementById('finalMoves');
-  finalMov.innerHTML = movNum+1;
+  finalMov.innerHTML = movNum;
   var finStars = document.getElementById('finalStars');
   finStars.innerHTML = stars.length;
+  var finSec = document.getElementById('finalSeconds');
+  finSec.innerHTML = time+1;
+}
+
+function countSeconds(){
+  time += 1;
+  seconds.innerHTML = time;
+  if(counting){
+    setTimeout(countSeconds, 1000);
+  }
 }
